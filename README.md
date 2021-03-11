@@ -19,12 +19,14 @@ which restic
 
 Make sure you nfs share is mounted. Here I have mine mounted to /mnt/storage1
 
+```bash
 export RESTIC_REPOSITORY=/mnt/storage1/$(hostname)
 export RESTIC_PASSWORD_FILE=/home/pi/.restic/restic-pw.txt
 
 mkdir -p /home/pi/.restic/
 echo "your_secure_password" > /home/pi/.restic/restic-pw.txt
 chmod 600 /home/pi/.restic/restic-pw.txt
+```
 
 ## Config include/excludes
 
