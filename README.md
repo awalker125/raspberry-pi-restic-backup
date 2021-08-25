@@ -1,5 +1,5 @@
 # raspberry-pi-restic-backup
-Scripts and setup to backup rasberry pi using restic to nfs
+Scripts and setup to backup rasberry pi using restic to azure blob
 
 
 ## Setup
@@ -17,15 +17,22 @@ which restic
 
 ## Init repo
 
-Make sure you nfs share is mounted. Here I have mine mounted to /mnt/storage1
+You will need to create an azure storage account. I went cool tier for costs.
+
+Once created on the Access Keys tab get the account name and key and set
 
 ```bash
-export RESTIC_REPOSITORY=/mnt/storage1/$(hostname)
+export AZURE_ACCOUNT_NAME=XXXXXXXXXXXXXX
+export AZURE_ACCOUNT_KEY=YYYYYYYYYYYYYY
+export RESTIC_REPOSITORY=azure:$(hostname):/
 export RESTIC_PASSWORD_FILE=/home/pi/.restic/restic-pw.txt
 
 mkdir -p /home/pi/.restic/
 echo "your_secure_password" > /home/pi/.restic/restic-pw.txt
 chmod 600 /home/pi/.restic/restic-pw.txt
+
+restic init
+
 ```
 
 ## Config include/excludes
@@ -62,7 +69,9 @@ END
 cat > /usr/local/bin/restic_backup.sh << 'END'
 #!/bin/bash
 
-export RESTIC_REPOSITORY=/mnt/storage1/$(hostname)
+export AZURE_ACCOUNT_NAME=XXXXXXXXXXXXXX
+export AZURE_ACCOUNT_KEY=YYYYYYYYYYYYYY
+export RESTIC_REPOSITORY=azure:$(hostname):/
 export RESTIC_PASSWORD_FILE=/home/pi/.restic/restic-pw.txt
 export INCLUDE=/home/pi/.restic/include.txt
 export EXCLUDE=/home/pi/.restic/exclude.txt
@@ -117,7 +126,9 @@ systemctl enable restic-backup.timer
 ## List backups
 
 ```bash
-export RESTIC_REPOSITORY=/mnt/storage1/$(hostname)
+export AZURE_ACCOUNT_NAME=XXXXXXXXXXXXXX
+export AZURE_ACCOUNT_KEY=YYYYYYYYYYYYYY
+export RESTIC_REPOSITORY=azure:$(hostname):/
 export RESTIC_PASSWORD_FILE=/home/pi/.restic/restic-pw.txt
 
 #Find zip files
